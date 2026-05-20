@@ -2,6 +2,7 @@ package com.farm_management.fms.modules.users;
 
 
 import com.farm_management.fms.common.exceptions.EmailAlreadyExistException;
+import com.farm_management.fms.common.exceptions.UserNotFoundException;
 import com.farm_management.fms.modules.users.dto.UserResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -13,18 +14,19 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository ;
-
     public UserResponse createUser(UserRequest userData){
-            if(userRepository.existsByEmail(userData.getEmail())){
-                throw new EmailAlreadyExistException("This email already exist");
-            };
-
            User user = new User();
            user.setFullName(userData.getFullName());
            user.setEmail(userData.getEmail());
            user.setPassword(userData.getPassword());
-           userRepository.save(user);
-           return new UserResponse(user.getId(),user.getFullName(),user.getEmail());
+           User userRes =  createUserInternal(user);
+           return new UserResponse(userRes.getId(),userRes.getFullName(),userRes.getEmail());
+    }
+    public User createUserInternal(User userData){
+        if(userRepository.existsByEmail(userData.getEmail())){
+            throw new EmailAlreadyExistException("This email already exist");
+        }
+        return userRepository.save(userData);
     }
 
     public UserResponse updateUser(Long userId , UserRequest userData){
@@ -34,7 +36,7 @@ public class UserService {
         userRepository.save(user);
         return new UserResponse(user.getId(),user.getFullName(),user.getEmail());
     }
-    public Optional<User> getUserByEmail(String email) {
-        return userRepository.findByEmail(email);
+    public User getUserByEmail(String email) {
+        return userRepository.findByEmail(email).orElseThrow(()-> new UserNotFoundException("No user found with this email"));
     }
 }
