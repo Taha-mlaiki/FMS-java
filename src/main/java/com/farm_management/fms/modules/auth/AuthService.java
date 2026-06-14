@@ -2,7 +2,9 @@ package com.farm_management.fms.modules.auth;
 
 import com.farm_management.fms.common.exceptions.InvalidCredentialsException;
 import com.farm_management.fms.common.utils.HashUtil;
-import com.farm_management.fms.modules.auth.dto.AuthResponse;
+import com.farm_management.fms.common.utils.JwtUtil;
+import com.farm_management.fms.modules.auth.dto.LoginResponse;
+import com.farm_management.fms.modules.auth.dto.RegisterResponse;
 import com.farm_management.fms.modules.auth.dto.LoginRequest;
 import com.farm_management.fms.modules.auth.dto.RegisterRequest;
 import com.farm_management.fms.modules.users.User;
@@ -14,8 +16,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class AuthService {
     private final UserService userService ;
-
-    public AuthResponse register(RegisterRequest registerReq){
+    private final JwtUtil jwtUtil;
+    public RegisterResponse register(RegisterRequest registerReq){
         User user = new User();
         user.setFullName(registerReq.getFullName());
         user.setEmail(registerReq.getEmail());
@@ -24,15 +26,16 @@ public class AuthService {
         user.setPassword(hashedPassword);
 
         User userRes = userService.createUserInternal(user);
-
-        return new AuthResponse(userRes.getFullName(), userRes.getEmail());
+        String token = jwtUtil.generateToken(userRes);
+        return new RegisterResponse("Loged in successfully",200);
     }
 
-    public AuthResponse login(LoginRequest body){
+    public LoginResponse login(LoginRequest body){
         User user = userService.getUserByEmail(body.getEmail());
         if(!HashUtil.verifyPassword(user.getPassword(),body.getPassword())){
             throw new InvalidCredentialsException("Invalid Credentials");
         }
-        return new AuthResponse(user.getFullName(), user.getEmail());
+        String token = jwtUtil.generateToken(user);
+        return new LoginResponse(token,"Loged in successfully");
     }
 }

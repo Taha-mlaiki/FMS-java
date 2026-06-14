@@ -1,6 +1,7 @@
 package com.farm_management.fms.modules.auth;
 
-import com.farm_management.fms.modules.auth.dto.AuthResponse;
+import com.farm_management.fms.modules.auth.dto.LoginResponse;
+import com.farm_management.fms.modules.auth.dto.RegisterResponse;
 import com.farm_management.fms.modules.auth.dto.LoginRequest;
 import com.farm_management.fms.modules.auth.dto.RegisterRequest;
 import jakarta.validation.Valid;
@@ -9,7 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/auth")
+@RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
 
@@ -17,13 +18,13 @@ public class AuthController {
 
     @PostMapping("/register")
     @ResponseStatus(HttpStatus.CREATED)
-    public AuthResponse register(
+    public RegisterResponse register(
             @Valid @RequestBody RegisterRequest requestBody
             ){
         return authService.register(requestBody);
     }
     @PostMapping("/login")
-    public AuthResponse login(
+    public LoginResponse login(
              @Valid @RequestBody LoginRequest body
             ){
         return authService.login(body);
