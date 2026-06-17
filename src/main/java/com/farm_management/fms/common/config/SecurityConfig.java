@@ -32,7 +32,7 @@ public class SecurityConfig {
                csrf(AbstractHttpConfigurer::disable)
                     .authorizeHttpRequests(auth->
                        // Make the auth endpoints completely public (anyone can log in or register)
-                       auth.requestMatchers("/api/auth/**").permitAll()
+                       auth.requestMatchers("/api/auth/**","/error").permitAll()
                                // Every other endpoint in your application requires a valid token
                                .anyRequest().authenticated())
                // 3. Make the session Stateless

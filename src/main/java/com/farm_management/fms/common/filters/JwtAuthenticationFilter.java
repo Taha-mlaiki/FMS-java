@@ -1,6 +1,7 @@
 package com.farm_management.fms.common.filters;
 
-import com.farm_management.fms.common.exceptions.InvalidCredentialsException;
+import com.farm_management.fms.common.exceptions.ApiException;
+import org.springframework.http.HttpStatus;
 import com.farm_management.fms.common.utils.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -37,7 +38,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         token = authHeader.substring(7);
 
         if(token.isBlank()){
-            throw new InvalidCredentialsException("Token does not exist");
+            throw new ApiException(HttpStatus.UNAUTHORIZED, "Token does not exist");
         }
 
         String userId = jwtUtil.ValidateAndExtractUserId(token);

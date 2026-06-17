@@ -1,4 +1,4 @@
-package com.farm_management.fms.modules.users.dto;
+package com.farm_management.fms.modules.users.dtos;
 
 import com.farm_management.fms.common.validation.OnCreate;
 import com.farm_management.fms.common.validation.OnUpdate;

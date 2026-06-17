@@ -2,6 +2,7 @@ package com.farm_management.fms.modules.users;
 
 
 import com.farm_management.fms.common.enums.Role;
+import com.farm_management.fms.modules.farms.Farm;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
@@ -11,6 +12,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -35,6 +37,10 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role  = Role.WORKER;
+
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Farm> farms = new ArrayList<>();
 
     @CreationTimestamp
     private LocalDateTime createdAt ;

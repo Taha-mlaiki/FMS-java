@@ -1,6 +1,6 @@
 package com.farm_management.fms.modules.auth;
 
-import com.farm_management.fms.common.exceptions.InvalidCredentialsException;
+import com.farm_management.fms.common.exceptions.ApiException;
 import com.farm_management.fms.common.utils.HashUtil;
 import com.farm_management.fms.common.utils.JwtUtil;
 import com.farm_management.fms.modules.auth.dto.LoginResponse;
@@ -10,6 +10,7 @@ import com.farm_management.fms.modules.auth.dto.RegisterRequest;
 import com.farm_management.fms.modules.users.User;
 import com.farm_management.fms.modules.users.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 @RequiredArgsConstructor
@@ -33,7 +34,7 @@ public class AuthService {
     public LoginResponse login(LoginRequest body){
         User user = userService.getUserByEmail(body.getEmail());
         if(!HashUtil.verifyPassword(user.getPassword(),body.getPassword())){
-            throw new InvalidCredentialsException("Invalid Credentials");
+            throw new ApiException(HttpStatus.UNAUTHORIZED, "Invalid Credentials");
         }
         String token = jwtUtil.generateToken(user);
         return new LoginResponse(token,"Loged in successfully");

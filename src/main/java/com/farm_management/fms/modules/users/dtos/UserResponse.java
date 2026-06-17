@@ -1,4 +1,4 @@
-package com.farm_management.fms.modules.users.dto;
+package com.farm_management.fms.modules.users.dtos;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -11,4 +11,5 @@ public class UserResponse {
     private Long id ;
     private String fullName;
     private String email;
+
 }

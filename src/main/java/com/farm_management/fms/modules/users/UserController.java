@@ -1,6 +1,6 @@
 package com.farm_management.fms.modules.users;
 
-import com.farm_management.fms.modules.users.dto.ProfileResponse;
+import com.farm_management.fms.modules.users.dtos.ProfileResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

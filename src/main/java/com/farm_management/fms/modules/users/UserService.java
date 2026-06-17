@@ -1,14 +1,12 @@
 package com.farm_management.fms.modules.users;
 
 
-import com.farm_management.fms.common.exceptions.EmailAlreadyExistException;
-import com.farm_management.fms.common.exceptions.UserNotFoundException;
-import com.farm_management.fms.modules.users.dto.UserResponse;
+import com.farm_management.fms.common.exceptions.ApiException;
+import com.farm_management.fms.modules.users.dtos.UserResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import com.farm_management.fms.modules.users.dto.UserRequest;
-
-import java.util.Optional;
+import com.farm_management.fms.modules.users.dtos.UserRequest;
 
 @Service
 @RequiredArgsConstructor
@@ -24,7 +22,7 @@ public class UserService {
     }
     public User createUserInternal(User userData){
         if(userRepository.existsByEmail(userData.getEmail())){
-            throw new EmailAlreadyExistException("This email already exist");
+            throw new ApiException(HttpStatus.CONFLICT, "This email already exist");
         }
         return userRepository.save(userData);
     }
@@ -37,6 +35,6 @@ public class UserService {
         return new UserResponse(user.getId(),user.getFullName(),user.getEmail());
     }
     public User getUserByEmail(String email) {
-        return userRepository.findByEmail(email).orElseThrow(()-> new UserNotFoundException("No user found with this email"));
+        return userRepository.findByEmail(email).orElseThrow(()-> new ApiException(HttpStatus.NOT_FOUND, "No user found with this email"));
     }
 }
