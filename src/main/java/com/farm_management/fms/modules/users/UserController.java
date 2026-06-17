@@ -1,36 +1,26 @@
 package com.farm_management.fms.modules.users;
 
-import com.farm_management.fms.common.validation.OnCreate;
-import com.farm_management.fms.common.validation.OnUpdate;
-import com.farm_management.fms.modules.users.dto.UserRequest;
-import com.farm_management.fms.modules.users.dto.UserResponse;
-import org.springframework.http.HttpStatus;
-import org.springframework.validation.annotation.*;
+import com.farm_management.fms.modules.users.dto.ProfileResponse;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController()
 @RequestMapping("/users")
+@RequiredArgsConstructor
 public class UserController {
 
-    final private UserService userService ;
-
-    public  UserController(UserService userService){
-        this.userService = userService ;
+    @GetMapping("/profile")
+    @PreAuthorize("hasAnyRole('WORKER')")
+    public ProfileResponse getUserProfile(@AuthenticationPrincipal User currentUser){
+        return new ProfileResponse(
+                currentUser.getId(),
+                currentUser.getFullName(),
+                currentUser.getEmail(),
+                currentUser.getRole(),
+                currentUser.getCreatedAt(),
+                currentUser.getUpdatedAt()
+        );
     }
-    @PostMapping("")
-    @ResponseStatus(HttpStatus.CREATED)
-    public UserResponse createUser(
-            @Validated(OnCreate.class) @RequestBody UserRequest body
-    ){
-        return userService.createUser(body);
-    }
-
-    @PutMapping("/{userId}")
-    public UserResponse updateUser(
-            @PathVariable("userId") Long userId,
-            @Validated(OnUpdate.class) @RequestBody UserRequest body
-    ){
-        return userService.updateUser(userId,body);
-    }
-
 }

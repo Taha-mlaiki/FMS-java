@@ -21,13 +21,13 @@ public class AuthService {
         User user = new User();
         user.setFullName(registerReq.getFullName());
         user.setEmail(registerReq.getEmail());
+        user.setRole(registerReq.getRole());
         // the password will hash it in the next version
         String hashedPassword = HashUtil.hashPassword(registerReq.getPassword());
         user.setPassword(hashedPassword);
 
-        User userRes = userService.createUserInternal(user);
-        String token = jwtUtil.generateToken(userRes);
-        return new RegisterResponse("Loged in successfully",200);
+        userService.createUserInternal(user);
+        return new RegisterResponse("Register successfully",201);
     }
 
     public LoginResponse login(LoginRequest body){

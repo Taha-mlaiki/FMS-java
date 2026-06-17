@@ -1,11 +1,13 @@
 package com.farm_management.fms.modules.users;
 
 
+import com.farm_management.fms.common.enums.Role;
 import jakarta.persistence.*;
 import lombok.Data;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import java.time.LocalDateTime;
@@ -30,19 +32,21 @@ public class User implements UserDetails {
     @Column(nullable = false)
     private String password ;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    private Role role  = Role.WORKER;
+
     @CreationTimestamp
     private LocalDateTime createdAt ;
 
     @UpdateTimestamp
     private LocalDateTime updatedAt ;
 
-    @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         // This is where you return roles. For now, we will return an empty list.
-        return List.of();
+        return List.of(new SimpleGrantedAuthority("ROLE_" + this.role));
     }
 
-    @Override
     public String getUsername(){
         return String.valueOf(this.id);
     }
